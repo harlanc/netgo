@@ -1,0 +1,294 @@
+//protoc --go_out=. *.proto
+syntax = "proto3";
+//package Netgo.Library;
+package server;
+
+enum MessageType{
+    
+    JoinLobby   = 0;
+    LeaveLobby  = 1;
+    CreateRoom  = 2;
+    JoinRoom    = 3;
+    JoinOrCreateRoom = 4;
+    LeaveRoom   = 5;
+    RPC = 6;
+    Instantiation = 7;
+    ViewSync = 8;
+    CustomEvent = 9;
+    SubscribeMsgChannels = 10;
+    UnSubscribeMsgChannels = 11;
+}
+
+enum CacheOptions{
+
+    AddToRoomCache = 0;
+    RemoveFromRoomCache = 1;
+}
+//the NGAny is a union,only one type is set 
+message  NGAny{
+    
+    oneof ngType{
+
+    double ngDouble = 11;
+    float ngFloat = 12;
+    int32 ngInt32 = 13;
+    int64 ngInt64  = 14;
+    uint32 ngUint32 = 15;
+    uint64 ngUint64 = 16;
+    sint32 ngSint32 = 17;
+    sint64 ngSint64 = 18;
+    fixed32 ngFixed32 = 19;
+    fixed64  ngFixed64 = 20;
+    sfixed32 ngSfixed32 = 21;
+    sfixed64 ngSfixed64 = 22;
+    bool ngBool = 23;
+    string ngString = 24;
+    bytes ngBytes = 25;
+
+    NGVector3 ngVector3 = 31;
+    NGQuaternion ngQuaternion = 32;
+    NGColor ngColor = 33;
+
+    }
+}
+
+message CommonOptions{
+    
+    repeated uint32 sendToChannelIds = 1;
+    CacheOptions cacheOptions = 2;
+}
+
+message CreateRoomParams{
+
+    string roomId = 1;
+    uint32 maxNumber = 2;
+}
+
+message CreateRoomResponseParams{
+
+    uint32 returnValue = 1;
+    string message = 2;
+    uint32 peerId = 3;
+}
+
+message JoinRoomParams{
+
+    string roomId = 1;
+}
+
+message JoinRoomResponseParams{
+
+    uint32 returnValue = 1;
+    string message = 2;
+    uint32 peerId = 3;
+}
+
+message JoinRoomForwardParams{
+    
+   
+}
+
+message JoinOrCreateRoomParams{
+
+    string roomId = 1;
+    uint32 maxNumber = 2;
+}
+
+message JoinOrCreateRoomResponseParams{
+
+    uint32 returnValue = 1;
+    string message = 2;
+    uint32 peerId = 3;
+}
+
+message JoinOrCreateRoomForwardParams{
+    
+
+}
+
+message LeaveRoomParams{
+
+    string roomId = 1;
+}
+
+message LeaveRoomResponseParams{
+
+    uint32 returnValue = 1;
+    string message = 2;
+    uint32 peerId = 3;
+}
+
+message LeaveRoomForwardParams{
+
+   
+}
+//event relvelant structs
+enum RPCTarget{
+
+    All = 0;
+    Others = 1;
+
+}
+
+//RPC parameters send from client to server
+message RPCParams{
+
+    CommonOptions options = 1;
+    RPCTarget target = 2;
+    uint32 viewID = 3;
+    string methodName = 4;
+    repeated NGAny parameters = 5;
+}
+
+message RPCForwardParams{
+
+    uint32 viewID = 1;
+    string methodName = 2;
+    repeated NGAny parameters = 3;
+}
+
+message NGVector3{
+
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message NGQuaternion{
+
+    float x = 1;
+    float y = 2;
+    float z = 3;
+    float w = 4;
+}
+
+message NGColor{
+
+    float r = 1;
+    float g = 2;
+    float b = 3;
+    float a = 4;
+}
+
+//LaunchEventParams and LaunchEventForwardParams all use this message body
+message InstantiationParams{
+
+    CommonOptions options = 1; 
+    string prefabName = 2;
+    NGVector3 position = 3;
+    NGQuaternion rotation = 4;
+    repeated uint32 viewIDs = 5;
+}
+
+message InstantiationForwardParams{
+    
+    string prefabName = 1;
+    NGVector3 position = 2;
+    NGQuaternion rotation = 3;
+    repeated uint32 viewIDs = 4;
+}
+
+//LaunchEventParams and LaunchEventForwardParams all use this message body
+message ViewSyncDataParams{
+
+    uint32 viewID = 1;
+    repeated NGAny viewSyncData = 2;
+}
+
+message ViewSyncParams{
+
+    CommonOptions options = 1; 
+    repeated ViewSyncDataParams vsdParams = 2;
+}
+
+message ViewSyncForwardParams{
+
+    repeated ViewSyncDataParams vsdParams = 1;
+}
+
+message CustomEventParams{
+
+    CommonOptions options = 1; 
+    uint32 eventID = 2;
+    repeated uint32 targetPeerIds = 3;
+    repeated NGAny customData = 4;
+}
+
+//Launch Event only has Forward params
+message CustomEventForwardParams {
+
+    uint32 eventID = 1;
+    repeated NGAny customData = 2;
+}
+
+message SubscribeMsgChannelsParams{
+
+    repeated uint32 channelids = 1;
+}
+
+message UnSubscribeMsgChannelsParams{
+
+    repeated uint32 channelids = 1;
+}
+//send from client to server
+message SendMessage{
+
+    MessageType msgType = 1;
+    CreateRoomParams crParams = 2;
+    JoinRoomParams jrParams = 3;
+    JoinOrCreateRoomParams jocrParams = 4;
+    LeaveRoomParams lrParams = 5;
+    RPCParams rpcParams = 6;
+    InstantiationParams iParams = 7;
+    ViewSyncParams vsParams= 8;
+    CustomEventParams ceParams = 9;
+    SubscribeMsgChannelsParams smcParams = 10;
+    UnSubscribeMsgChannelsParams usmcParams = 11;
+}
+
+enum SocketStatus{
+    Disconnected = 0;
+    Connected = 1;
+   
+}
+
+message ResponseSocketStatusMessage{
+    SocketStatus sStatus = 1; 
+}
+
+//send from server to client
+message ResponseOperationMessage{
+    
+    MessageType msgType = 1;
+    CreateRoomResponseParams crrParams = 2;
+    JoinRoomResponseParams jrrParams = 3;
+    JoinOrCreateRoomResponseParams jocrrParams = 4;
+    LeaveRoomResponseParams lrrParams = 5;
+}
+//need to notifiy others in the room.
+message ForwardMessage{
+
+    MessageType msgType = 1;
+    uint32 peerId = 2;
+    JoinRoomForwardParams jrfParams = 3;
+    JoinOrCreateRoomForwardParams jocrfParams = 4;
+    LeaveRoomForwardParams lrfParams = 5;
+    RPCForwardParams rfParams = 6;
+    InstantiationForwardParams ifParams = 7;
+    ViewSyncForwardParams vsfParams = 8;
+    CustomEventForwardParams ceParams = 9;
+}
+enum ReceiveMessageType{
+
+    ResponseSocketStatus = 0;
+    ResponseOperation = 1;
+    Forward = 2;
+}
+//send from server to client
+message ReceiveMessage{
+
+    ReceiveMessageType receiveMsgType = 1;
+    ResponseSocketStatusMessage rssMsg = 2;
+    ResponseOperationMessage roMsg = 3;
+    ForwardMessage fMsg = 4;
+}
