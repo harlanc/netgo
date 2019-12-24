@@ -23,6 +23,10 @@ Netgo is a Flexible,Powerful,Friendly network synchronization engine,it can be u
 
 ## Start Server	
 
+### Environment
+
+Netgo can be run under MacOS/Ubuntu/Centos.
+
 ### Clone 
 
 Issue the following command to clone the server codes to local:
