@@ -51,6 +51,8 @@ Open [main.go](https://github.com/netgo-framework/netgo/blob/master/main.go) and
     
 ## How to Run Client Demo
 
+Following the netgo-unity-client [README](https://github.com/netgo-framework/netgo-unity-client) to run the client Demo. 
+
     
     
 ##  Third Party Packages
