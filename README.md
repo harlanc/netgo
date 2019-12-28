@@ -39,10 +39,10 @@ Go to the netgo root folder and issue the following commad:
       
     go get -d ./...
     
-### Change IP
+### Change port
 Open [main.go](https://github.com/netgo-framework/netgo/blob/master/main.go) and  update the ip and port:
 
-    tcpAddr, err := net.ResolveTCPAddr("tcp", "192.168.0.104:8686")
+    tcpAddr, err := net.ResolveTCPAddr("tcp", "0.0.0.0:8686")
     
 
 ### Start Netgo

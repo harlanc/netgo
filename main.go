@@ -20,7 +20,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// creates a tcp listener
-	tcpAddr, err := net.ResolveTCPAddr("tcp", "192.168.0.104:8686")
+	tcpAddr, err := net.ResolveTCPAddr("tcp", "0.0.0.0:8686")
 	//tcpAddr, err := net.ResolveTCPAddr("tcp", "192.168.50.236:8686")
 	//tcpAddr, err := net.ResolveTCPAddr("tcp", "192.168.43.189:8686")
 	checkError(err)
